@@ -10,8 +10,8 @@ import upload from "./routes/Storage/upload";
 import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
 
+// Load dotenv conf?
 dotenv.config();
-
 checkJwtSecret();
 
 const app = initializeExpressApp();
