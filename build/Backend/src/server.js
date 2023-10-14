@@ -11,6 +11,9 @@ const user_1 = __importDefault(require("./routes/user"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const site_1 = __importDefault(require("./routes/site"));
 const forms_1 = __importDefault(require("./routes/forms"));
+const upload_1 = __importDefault(require("./routes/Storage/upload"));
+const products_1 = __importDefault(require("./routes/ecommerce/products"));
+const klarnaV3_1 = __importDefault(require("./routes/ecommerce/klarnaV3"));
 dotenv_1.default.config();
 checkJwtSecret();
 const app = initializeExpressApp();
@@ -20,6 +23,9 @@ app.use("/api/user", user_1.default);
 app.use("/api/auth", auth_1.default);
 app.use("/api/sites", site_1.default);
 app.use("/api/forms", forms_1.default);
+app.use("/api/upload", upload_1.default);
+app.use("/api/ecommerce/products", products_1.default);
+app.use("/api/ecommerce/klarnaV3/neworder", klarnaV3_1.default);
 /* MongoDB */
 const MONGODB = getMongoDBConfig();
 connectToMongoDB(MONGODB);
@@ -36,14 +42,14 @@ function initializeExpressApp() {
     app.use((0, cors_1.default)());
     app.use(express_1.default.json());
     app.get("/", (req, res) => {
-        res.send("Hello World! ");
+        res.status(403);
     });
     return app;
 }
 // Function to start the server
 function startServer(app) {
-    app.listen(3000, () => {
-        console.log("Server is running on port 3000");
+    app.listen(8000, () => {
+        console.log("Server is running on port 8000");
     });
 }
 // Function to get MongoDB configuration

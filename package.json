@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node src/server.ts",
-    "start": "NEW_RELIC_APP_NAME=CMS Api Backend NEW_RELIC_LICENSE_KEY=eu01xxff301daa494886682b9e57ba27FFFFNRAL node -r newrelic build/server.js",
+    "start": "node -r dotenv/config build/server.js",
     "build": "tsc -p ."
   },
   "keywords": [],
@@ -39,6 +39,7 @@
     "@types/safe-compare": "^1.1.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.2.2"
   }
 }

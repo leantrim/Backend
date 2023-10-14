@@ -1,6 +1,5 @@
 import Joi from "joi";
 import mongoose, { Schema, Model } from "mongoose";
-import { FormTypes } from "../../types";
 
 type FileUploadTypes = {
   file: Buffer;

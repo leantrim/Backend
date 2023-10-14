@@ -1,8 +1,8 @@
 import * as Minio from "minio";
 import multer from "multer";
 import dotenv from "dotenv";
+dotenv.config();
 
-dotenv.config({ path: __dirname + "/../../../../../.env" });
 export const storage = multer.memoryStorage();
 export const upload = multer({ storage });
 

@@ -8,7 +8,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const User_1 = require("../model/User");
 const auth_1 = __importDefault(require("../middleware/auth"));
 const router = express_1.default.Router();
-router.post("/", async (req, res) => {
+router.post("/", auth_1.default, async (req, res) => {
     const { error } = (0, User_1.validateUser)(req.body);
     if (error)
         return res.status(400).send(error.message);
@@ -27,6 +27,12 @@ router.post("/", async (req, res) => {
         console.error("ERROR: Something went wrong with registering a user, please contact administrator and include this error:", err);
         return res.status(500).send(err);
     }
+});
+router.get("/", auth_1.default, async (req, res) => {
+    const user = await User_1.User.find().select("-password");
+    if (!user)
+        return res.status(404).send("No sites have been created");
+    return res.send(user);
 });
 router.get("/me", auth_1.default, async (req, res) => {
     const user = await User_1.User.findById(req.body.user._id).select("-password");

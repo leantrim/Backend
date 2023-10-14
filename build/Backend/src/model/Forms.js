@@ -15,7 +15,7 @@ const formSchema = new mongoose_1.default.Schema({
     serviceType: { type: String, required: false },
     dateSubmitted: { type: Date, required: false },
 });
-const Form = mongoose_1.default.model("Form", formSchema);
+const Form = mongoose_1.default.model('Form', formSchema);
 exports.Form = Form;
 function validateForm(form) {
     const schema = joi_1.default.object({

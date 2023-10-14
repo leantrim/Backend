@@ -20,7 +20,7 @@ userSchema.methods.generateAuthToken = function () {
         name: this.name,
         email: this.email,
         isAdmin: this.isAdmin,
-    }, process.env.JWT_SECRET || "JWT_SECRET", { expiresIn: "7d" });
+    }, process.env.JWT_SECRET, { expiresIn: "7d" });
 };
 const User = mongoose_1.default.model("User", userSchema);
 exports.User = User;

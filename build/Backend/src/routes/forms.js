@@ -4,38 +4,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Site_1 = require("../model/Site");
-const auth_1 = __importDefault(require("../middleware/auth"));
+const Forms_1 = require("../model/Forms");
+const auth_1 = __importDefault(require("src/middleware/auth"));
 const router = express_1.default.Router();
-// TODO: Add authentication once user system is setup in the CMS.
-router.post("/", async (req, res) => {
-    const { error } = (0, Site_1.validateSite)(req.body);
+router.post('/', async (req, res) => {
+    const { error } = (0, Forms_1.validateForm)(req.body);
     if (error)
         return res.status(400).send(error.message);
-    const { site: url } = req.body;
-    const existingSite = await Site_1.Site.findOne({ url });
-    if (existingSite)
-        return res.status(400).send({ message: "site already exists", url });
-    const site = new Site_1.Site({ ...req.body });
+    const form = new Forms_1.Form({ ...req.body, dateSubmitted: new Date() });
     try {
-        await site.save();
-        return res.status(200).send(site);
+        await form.save();
+        return res.send(form);
     }
     catch (err) {
-        console.error("ERROR: Something went wrong with creating a website, please contact administrator and include this error:", err);
+        console.error('ERROR: Something went wrong with registering a form, please contact administrator and include this error:', err);
         return res.status(500).send(err);
     }
 });
-// TODO: Add authentication
-router.get("/", async (req, res) => {
-    const sites = await Site_1.Site.find();
-    if (!sites)
-        return res.status(404).send("No sites have been created");
-    return res.status(200).send(sites);
-});
-router.get("/site", auth_1.default, async (req, res) => {
-    const site = await Site_1.Site.findById(req.body.site._id);
-    return res.send(site);
+// TODO: Add authentication (user, admin)
+router.get('/', auth_1.default, async (req, res) => {
+    const forms = await Forms_1.Form.find();
+    if (!forms)
+        return res.status(404).send('No forms have been created');
+    return res.status(200).send(forms);
 });
 /*const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
