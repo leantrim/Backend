@@ -11,6 +11,7 @@ import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
 
 dotenv.config();
+
 checkJwtSecret();
 
 const app = initializeExpressApp();
