@@ -42,14 +42,10 @@ function initializeExpressApp() {
   app.use(cors());
   app.use(express.json());
   app.get("/", (req, res) => {
-    res.status(403);
+    res.status(403).send("hello world");
   });
   return app;
 }
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
 
 // Function to start the server
 function startServer(app: any) {
