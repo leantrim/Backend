@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import { Order } from "src/model/ecommerce/Orders";
-import auth from "src/middleware/auth";
 import { OrderType } from "@mediapartners/shared-types/types/ecommerce";
+import { Order } from "../../model/ecommerce/Orders";
+import auth from "../../middleware/auth";
 
 const router = express.Router();
 

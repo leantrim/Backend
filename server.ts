@@ -49,6 +49,10 @@ function initializeExpressApp() {
   return app;
 }
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 // Function to start the server
 function startServer(app: any) {
   app.listen(8000, () => {
