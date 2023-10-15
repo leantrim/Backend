@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
+import "dotenv/config";
 import user from "./routes/user";
 import auth from "./routes/auth";
 import site from "./routes/site";
@@ -10,9 +10,8 @@ import upload from "./routes/Storage/upload";
 import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
 
-// Load dotenv conf?
-dotenv.config();
 checkJwtSecret();
+console.log(process.env);
 
 const app = initializeExpressApp();
 startServer(app);
