@@ -11,7 +11,6 @@ import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
 
 checkJwtSecret();
-console.log(process.env);
 
 const app = initializeExpressApp();
 startServer(app);
