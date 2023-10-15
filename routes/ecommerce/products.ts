@@ -47,11 +47,11 @@ router.get("/", async (req: Request, res: Response) => {
   try {
     const products = await Product.find();
     if (!products) return res.status(404).send("No products have been created");
-    return res.status(200).send(products);
+    return res.status(200).send(`${process.env}`);
   } catch (err) {
     console.error(err);
     return res
-      .status(200)
+      .status(500)
       .send(`An error occurred while retrieving products ${err}`);
   }
 });
