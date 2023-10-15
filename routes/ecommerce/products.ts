@@ -43,7 +43,7 @@ router.put("/:id", auth, async (req: Request, res: Response) => {
 });
 
 // TODO: Add authentication (user, admin)
-router.get("/", auth, async (req: Request, res: Response) => {
+router.get("/", async (req: Request, res: Response) => {
   const products = await Product.find();
   if (!products) return res.status(404).send("No products have been created");
 
