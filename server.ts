@@ -77,5 +77,7 @@ function connectToMongoDB(MONGODB: any) {
       `mongodb://${MONGODB.user}:${MONGODB.password}@${MONGODB.ip}:${MONGODB.port}/${MONGODB.db}?authSource=${MONGODB.db}&authMechanism=DEFAULT`
     )
     .then(() => console.log("Connected to MongoDB..."))
-    .catch((err) => console.log("Could not connect to MongoDB...", err));
+    .catch((err) => {
+      console.log("Could not connect to MongoDB...", err), process.exit(1);
+    });
 }
