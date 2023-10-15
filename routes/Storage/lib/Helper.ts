@@ -14,7 +14,9 @@ if (
   !process.env.MINIO_SECRET_KEY ||
   !process.env.MINIO_USE_SSL
 ) {
-  throw new Error("MiniO Config is not propperly set up, please check .env");
+  throw new Error(
+    `MiniO Config is not propperly set up, please check .env Port env: ${process.env.MINIO_PORT}`
+  );
 }
 
 export const minioClient = new Minio.Client({
