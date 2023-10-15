@@ -43,12 +43,11 @@ router.put("/:id", auth, async (req: Request, res: Response) => {
 });
 
 // TODO: Add authentication (user, admin)
-const appMode = process.env.NODE_ENV;
 router.get("/", async (req: Request, res: Response) => {
   try {
     const products = await Product.find();
     if (!products) return res.status(404).send("No products have been created");
-    return res.status(200).send(`${appMode}`);
+    return res.status(200).send(products);
   } catch (err) {
     console.error(err);
     return res
