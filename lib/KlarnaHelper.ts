@@ -112,7 +112,7 @@ export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
 };
 
 export function getKlarnaAuth() {
-  const client = process.env.KLARNA_CLIENT_KEY; // TODO: Update with production client key
+  const client = process.env.KLARNA_CLIENT_KEY;
   const secret = process.env.KLARNA_SECRET_KEY;
   const auth = "Basic " + Buffer.from(client + ":" + secret).toString("base64");
   return auth;

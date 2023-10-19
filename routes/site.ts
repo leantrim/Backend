@@ -29,12 +29,10 @@ router.put("/", auth, async (req: Request, res: Response) => {
 
 router.get("/", auth, async (req: Request, res: Response) => {
   // Introduce a delay of 2 seconds (2000 milliseconds) before fetching the sites
-  setTimeout(async () => {
-    const sites = await Site.find();
-    if (!sites) return res.status(404).send("No sites have been created");
+  const sites = await Site.find();
+  if (!sites) return res.status(404).send("No sites have been created");
 
-    return res.status(200).send(sites);
-  }, 10000); // Delay for 2 seconds
+  return res.status(200).send(sites);
 });
 
 router.get("/sitebyname/:id", auth, async (req: Request, res: Response) => {

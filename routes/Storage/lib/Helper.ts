@@ -46,6 +46,3 @@ export const getObjectsInBucket = (bucketName: string) => {
   });
   return data;
 };
-
-const objectsInBucket = getObjectsInBucket("mediapartners");
-console.log(objectsInBucket);

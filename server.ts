@@ -9,6 +9,9 @@ import forms from "./routes/forms";
 import upload from "./routes/Storage/upload";
 import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
+import store from "./routes/ecommerce/stores/stores";
+import categories from "./routes/ecommerce/stores/categories";
+import review from "./routes/ecommerce/stores/reviews";
 
 checkJwtSecret();
 
@@ -23,6 +26,9 @@ app.use("/api/forms", forms);
 app.use("/api/upload", upload);
 app.use("/api/ecommerce/products", products);
 app.use("/api/ecommerce/klarnaV3/neworder", klarnaV3);
+app.use("/api/ecommerce/stores", store);
+app.use("/api/ecommerce/categories", categories);
+app.use("/api/ecommerce/stores", review);
 
 /* MongoDB */
 const MONGODB = getMongoDBConfig();
@@ -55,7 +61,7 @@ function startServer(app: any) {
 }
 
 // Function to get MongoDB configuration
-function getMongoDBConfig() {
+export function getMongoDBConfig() {
   return {
     user: process.env.MONGODB_USER,
     password: encodeURIComponent(process.env.MONGODB_PASSWORD!!),
