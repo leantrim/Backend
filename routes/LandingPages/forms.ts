@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import { validateForm as validate, Form } from "../model/Forms";
+import { validateForm as validate, Form } from "../../model/LandingPages/Forms";
 import { FormTypes } from "@mediapartners/shared-types/types/panel";
-import auth from "./auth";
+import auth from "../auth";
 
 const router = express.Router();
 

@@ -4,14 +4,16 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import user from "./routes/user";
 import auth from "./routes/auth";
-import site from "./routes/site";
-import forms from "./routes/forms";
+import site from "./routes/LandingPages/site";
+import forms from "./routes/LandingPages/forms";
 import upload from "./routes/Storage/upload";
 import products from "./routes/ecommerce/products";
 import klarnaV3 from "./routes/ecommerce/klarnaV3";
 import store from "./routes/ecommerce/stores/stores";
 import categories from "./routes/ecommerce/stores/categories";
 import review from "./routes/ecommerce/stores/reviews";
+import subPages from "./routes/ecommerce/stores/subPages";
+import { API_ROUTES } from "@mediapartners/shared-types/types/Routes";
 
 checkJwtSecret();
 
@@ -19,16 +21,22 @@ const app = initializeExpressApp();
 startServer(app);
 
 /* Api controllers */
-app.use("/api/user", user);
-app.use("/api/auth", auth);
-app.use("/api/sites", site);
-app.use("/api/forms", forms);
-app.use("/api/upload", upload);
-app.use("/api/ecommerce/products", products);
-app.use("/api/ecommerce/klarnaV3/neworder", klarnaV3);
-app.use("/api/ecommerce/stores", store);
-app.use("/api/ecommerce/categories", categories);
-app.use("/api/ecommerce/stores", review);
+// Panel Routes
+app.use(`/${API_ROUTES.PANEL_USERS}`, user);
+app.use(`/${API_ROUTES.AUTH}`, auth);
+app.use(`/${API_ROUTES.UPLOAD}`, upload);
+
+// Landing Page routes
+app.use(`/${API_ROUTES.LANDING_PAGE_SITES}`, site);
+app.use(`/${API_ROUTES.LANDING_PAGE_FORMS}`, forms);
+
+// E-Commerce Routes
+app.use(`/${API_ROUTES.ECOMMERCE_PRODUCTS}`, products);
+app.use(`/${API_ROUTES.KLARNA}`, klarnaV3);
+app.use(`/${API_ROUTES.ECOMMERCE_SITES}`, store);
+app.use(`/${API_ROUTES.ECOMMERCE_CATEGORIES}`, categories);
+app.use(`/${API_ROUTES.ECOMMERCE_REVIEWS}`, review);
+app.use(`/${API_ROUTES.ECOMMERCE_SUB_PAGES}`, subPages);
 
 /* MongoDB */
 const MONGODB = getMongoDBConfig();

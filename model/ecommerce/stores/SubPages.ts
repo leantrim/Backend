@@ -9,7 +9,7 @@ const subPageSchema: Schema<StoreSubPage> = new mongoose.Schema({
   bodyText: { type: String, required: true },
 });
 
-const SubPage: Model<StoreSubPage> = mongoose.model("Store", subPageSchema);
+const SubPage: Model<StoreSubPage> = mongoose.model("SubPages", subPageSchema);
 
 function validateSubPage(store: StoreSubPage) {
   const schema = Joi.object<StoreSubPage>({

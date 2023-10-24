@@ -11,9 +11,9 @@ const ratingSchema: Schema<ReviewType> = new mongoose.Schema({
   images: [{ type: String, required: false }],
 });
 
-const Review: Model<ReviewType> = mongoose.model("Store", ratingSchema);
+const Review: Model<ReviewType> = mongoose.model("Reviews", ratingSchema);
 
-function validateReview(store: ReviewType) {
+function validateReview(review: ReviewType) {
   const schema = Joi.object<ReviewType>({
     name: Joi.string().required(),
     email: Joi.string().email().required(),
@@ -23,7 +23,7 @@ function validateReview(store: ReviewType) {
     images: Joi.array().items(Joi.string()),
   });
 
-  return schema.validate(store);
+  return schema.validate(review);
 }
 
 export { validateReview, Review };

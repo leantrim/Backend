@@ -16,7 +16,7 @@ const Categories: Model<CategoriesType> = mongoose.model(
   categorySchema
 );
 
-function validateCategory(store: CategoriesType) {
+function validateCategory(category: CategoriesType) {
   const schema = Joi.object<CategoriesType>({
     name: Joi.string().required(),
     absolutePath: Joi.string().required(),
@@ -25,7 +25,7 @@ function validateCategory(store: CategoriesType) {
     products: Joi.array().items(Joi.string().length(24)),
   });
 
-  return schema.validate(store);
+  return schema.validate(category);
 }
 
 export { validateCategory, Categories };

@@ -48,7 +48,7 @@ router.put("/:id", auth, async (req: Request, res: Response) => {
 // TODO: Add authentication (user, admin)
 router.get("/", async (req: Request, res: Response) => {
   try {
-    const subPages = await Review.findOne();
+    const subPages = await Review.find();
     if (!subPages) {
       return res
         .status(404)

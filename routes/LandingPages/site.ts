@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
-import { validateSite as validate, Site } from "../model/Site";
+import { validateSite as validate, Site } from "../../model/LandingPages/Site";
 import { WebsiteModel } from "@mediapartners/shared-types/types/panel/cms";
-import auth from "../middleware/auth";
+import auth from "../../middleware/auth";
 import mongoose from "mongoose";
 
 const router = express.Router();
