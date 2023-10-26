@@ -14,8 +14,6 @@ import categories from './routes/ecommerce/stores/categories';
 import review from './routes/ecommerce/stores/reviews';
 import subPages from './routes/ecommerce/stores/subPages';
 import { API_ROUTES } from '@mediapartners/shared-types/types/Routes';
-import https from 'https';
-import fs from 'fs';
 
 checkJwtSecret();
 
@@ -64,14 +62,9 @@ function initializeExpressApp() {
 }
 
 // Function to start the server
-function startServer(app: express.Application) {
-	const options = {
-		key: fs.readFileSync('./keys/private.key'),
-		cert: fs.readFileSync('./keys/certificate.crt'),
-	};
-
-	https.createServer(options, app).listen(8000, () => {
-		console.log('Server is running on port 8000..');
+function startServer(app: any) {
+	app.listen(8000, () => {
+		console.log('Server is running on port 8000');
 	});
 }
 
