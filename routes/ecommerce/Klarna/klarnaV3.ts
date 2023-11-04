@@ -1,34 +1,32 @@
 import express, { Request, Response } from 'express';
-import {
-	getKlarnaOrder,
-	sendCreateNewOrderToKlarna,
-} from '../../lib/KlarnaHelper';
-import auth from '../../middleware/auth';
-import { validateKlarnaV3 } from '../../model/ecommerce/KlarnaV3';
-import { Order } from '../../model/ecommerce/Orders';
-import { Product } from '../../model/ecommerce/Products';
+import { getKlarnaOrder, sendCreateNewOrderToKlarna } from './lib/KlarnaHelper';
+import auth from '../../../middleware/auth';
+import { validateKlarnaV3 } from '../../../model/ecommerce/Klarna/KlarnaV3';
+import { Order } from '../../../model/ecommerce/Orders';
+import { Product } from '../../../model/ecommerce/stores/Products/Products';
 import axios from 'axios';
 import { KlarnaOrderData } from './KlarnaType';
+import xss from 'xss';
 
 const router = express.Router();
 
 router.get('/:id', auth, async (req: Request, res: Response) => {
-	if (!req.params.id) return res.status(400).send('Order ID is missing.');
+	if (!req.params.id) return res.status(400).send(xss('Order ID is missing.'));
 
 	try {
 		const klarnaData = await getKlarnaOrder(req.params.id);
-		console.log('Request came in..', klarnaData);
 		return res.status(200).send(klarnaData);
 	} catch (error) {
-		return res.status(400).send(error);
+		console.error(error);
+		return res.status(400).send(`An unkown error has occured`);
 	}
 });
 
 // Confirm order
 router.post('/confirmation/push', auth, async (req: Request, res: Response) => {
 	const { merchant_urls, html_snippet, ...restBody } = req.body;
-	console.log(req.body, 'req came in');
 	const order = new Order(restBody);
+	console.log('Came in');
 	order.save();
 	res.status(200);
 });
@@ -37,19 +35,23 @@ router.post('/confirmation/push', auth, async (req: Request, res: Response) => {
 router.post('/', auth, async (req: Request, res: Response) => {
 	const { error } = validateKlarnaV3(req.body);
 	const { cartItems, ...restOfBody } = req.body;
-	if (error) return res.status(400).send(error);
+	console.log(error?.message);
+	if (error) return res.status(400).send(error.message);
 
 	const product = await Product.findOne();
-	if (!product) return res.status(500).send('Product not found.');
+	if (!product) return res.status(500).send(xss('Product not found.'));
 
 	try {
 		const klarnaData = await sendCreateNewOrderToKlarna(cartItems, product);
+		console.log(klarnaData);
 		return res.status(200).json(klarnaData);
 	} catch (error) {
 		console.error('There was a problem with the Klarna order: ', error);
 		if (error instanceof Error) {
-			return res.status(500).send(error.message);
+			console.error(error.message);
+			return res.status(500).send('An unknown error occurred.');
 		} else {
+			console.log(error);
 			return res.status(500).send('An unknown error occurred.');
 		}
 	}

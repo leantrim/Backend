@@ -6,31 +6,29 @@ import {
 	validateNewStore,
 	validateUpdateStore,
 } from '../../../model/ecommerce/stores/Stores';
+import xss from 'xss';
 
 const router = express.Router();
 
 router.post('/', auth, async (req: Request, res: Response) => {
 	const { error } = validateNewStore(req.body);
-	if (error) return res.status(400).send(error.message);
+	if (error) return res.status(400).send(xss(error.message));
 
 	const store = new Store({ ...req.body, dateSubmitted: new Date() });
 
 	try {
 		await store.save();
 		return res.send(store);
-	} catch (err) {
-		console.error(
-			'ERROR: Something went wrong with creating a store, please contact administrator and include this error:',
-			err
-		);
-		return res.status(500).send(err);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send('An error occurred. Please try again later.');
 	}
 });
 
 router.put('/:id', auth, async (req: Request, res: Response) => {
 	const { user, ...restBody } = req.body;
 	const { error } = validateUpdateStore(restBody);
-	if (error) return res.status(400).send(error.message);
+	if (error) return res.status(400).send(xss(error.message));
 	console.log(restBody);
 	const storeId = req.params.id;
 	console.log(storeId);
@@ -64,8 +62,8 @@ router.put('/:id', auth, async (req: Request, res: Response) => {
 			return res.status(404).send('The store with the given id was not found');
 		return res.status(200).send(update);
 	} catch (error) {
-		console.log(error);
-		return res.status(500).send(error);
+		console.error(error);
+		return res.status(500).send('An error occurred. Please try again later.');
 	}
 
 	// TODO: Add user log
@@ -81,11 +79,9 @@ router.get('/', async (req: Request, res: Response) => {
 				.send('There are no stores created in the database.');
 		}
 		return res.status(200).send(stores);
-	} catch (err) {
-		console.error(err);
-		return res
-			.status(500)
-			.send(`An error occurred while retrieving stores ${err}`);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send('An error occurred. Please try again later.');
 	}
 });
 
@@ -93,8 +89,9 @@ router.get('/:id', auth, async (req: Request, res: Response) => {
 	const store: StoreType | null = await Store.findById(req.params.id);
 
 	if (!store)
-		return res.status(404).send('The store with the given id was not found');
-	console.log(store);
+		return res
+			.status(404)
+			.send(xss('The store with the given id was not found'));
 	return res.status(200).send(store);
 });
 

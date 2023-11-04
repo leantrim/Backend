@@ -2,41 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import 'dotenv/config';
-import user from './routes/user';
-import auth from './routes/auth';
-import site from './routes/LandingPages/site';
-import forms from './routes/LandingPages/forms';
-import upload from './routes/Storage/upload';
-import products from './routes/ecommerce/products';
-import klarnaV3 from './routes/ecommerce/klarnaV3';
-import store from './routes/ecommerce/stores/stores';
-import categories from './routes/ecommerce/stores/categories';
-import review from './routes/ecommerce/stores/reviews';
-import subPages from './routes/ecommerce/stores/subPages';
-import { API_ROUTES } from '@mediapartners/shared-types/types/Routes';
+import apiRoutes from './routes';
 
 checkJwtSecret();
 
 const app = initializeExpressApp();
 startServer(app);
 
-/* Api controllers */
-// Panel Routes
-app.use(`/${API_ROUTES.PANEL_USERS}`, user);
-app.use(`/${API_ROUTES.AUTH}`, auth);
-app.use(`/${API_ROUTES.UPLOAD}`, upload);
-
-// Landing Page routes
-app.use(`/${API_ROUTES.LANDING_PAGE_SITES}`, site);
-app.use(`/${API_ROUTES.LANDING_PAGE_FORMS}`, forms);
-
-// E-Commerce Routes
-app.use(`/${API_ROUTES.ECOMMERCE_PRODUCTS}`, products);
-app.use(`/${API_ROUTES.KLARNA}`, klarnaV3);
-app.use(`/${API_ROUTES.ECOMMERCE_SITES}`, store);
-app.use(`/${API_ROUTES.ECOMMERCE_CATEGORIES}`, categories);
-app.use(`/${API_ROUTES.ECOMMERCE_REVIEWS}`, review);
-app.use(`/${API_ROUTES.ECOMMERCE_SUB_PAGES}`, subPages);
+app.use(apiRoutes);
 
 /* MongoDB */
 const MONGODB = getMongoDBConfig();
@@ -53,11 +26,14 @@ function checkJwtSecret() {
 // Function to initialize Express App
 function initializeExpressApp() {
 	const app = express();
+	app.disable('x-powered-by');
 	app.use(cors());
 	app.use(express.json());
+
 	app.get('/', (req, res) => {
 		res.status(403).send('hello world');
 	});
+
 	return app;
 }
 

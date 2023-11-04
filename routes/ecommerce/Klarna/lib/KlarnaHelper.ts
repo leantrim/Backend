@@ -5,7 +5,7 @@ import {
 } from '@mediapartners/shared-types/types/ecommerce';
 
 const FRONTEND_URL = process.env.KLARNA_FRONTEND_URL;
-const BACKEND_URL = process.env.KLARNA_BACKEND_URL;
+const BACKEND_URL = process.env.KLARNA_BACKEND_URL || 'https://localhost:8000';
 const KLARNA_URL = process.env.KLARNA_URL;
 
 export const getKlarnaOrder = async (order_id: string) => {
@@ -41,6 +41,7 @@ export const sendCreateNewOrderToKlarna = async (
 	cartItems: CartType[],
 	product: ProductType
 ) => {
+	console.log('Came in?');
 	const payLoad = buildKlarnaRequest(cartItems, product);
 	const auth = getKlarnaAuth();
 	try {
@@ -55,14 +56,17 @@ export const sendCreateNewOrderToKlarna = async (
 
 		if (!response.ok) {
 			const errorData = await response.json();
+			console.log(errorData);
+			console.log(errorData);
 			throw new Error(
 				`HTTP error! status: ${response.status}, message: ${errorData.error_messages}`
 			);
 		}
-
 		const data = await response.json();
+		console.log(data);
 		return data;
 	} catch (error) {
+		console.log(error);
 		console.error('There was a problem with the fetch operation: ', error);
 		return error;
 	}
@@ -75,8 +79,8 @@ export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
 			totalLineOrderAmount * (2500 / (10000 + 2500))
 		);
 		return {
-			reference: `${item.variant.variantType} - ${item.productName}`,
-			name: `${item.productName} - ${item.variant.variantType}`,
+			reference: `${item.variant.type} - ${item.productName}`,
+			name: `${item.productName} - ${item.variant.type}`,
 			quantity: item.quantity,
 			unit_price: product.price * 100,
 			quantity_unit: 'pcs',
@@ -84,7 +88,7 @@ export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
 			total_amount: totalLineOrderAmount,
 			total_discount_amount: 0,
 			total_tax_amount: totalTaxAmount,
-			image_url: item.variant.variantMainImage,
+			image_url: item.variant.image.url,
 		};
 	});
 
