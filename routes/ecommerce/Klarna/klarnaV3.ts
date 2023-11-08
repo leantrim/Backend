@@ -5,7 +5,7 @@ import { validateKlarnaV3 } from '../../../model/ecommerce/Klarna/KlarnaV3';
 import { Order } from '../../../model/ecommerce/Orders';
 import { Product } from '../../../model/ecommerce/stores/Products/Products';
 import axios from 'axios';
-import { KlarnaOrderData } from './KlarnaType';
+import { KlarnaOrderData } from './lib/KlarnaType';
 import xss from 'xss';
 
 const router = express.Router();
@@ -26,7 +26,6 @@ router.get('/:id', auth, async (req: Request, res: Response) => {
 router.post('/confirmation/push', auth, async (req: Request, res: Response) => {
 	const { merchant_urls, html_snippet, ...restBody } = req.body;
 	const order = new Order(restBody);
-	console.log('Came in');
 	order.save();
 	res.status(200);
 });
@@ -43,8 +42,8 @@ router.post('/', auth, async (req: Request, res: Response) => {
 
 	try {
 		const klarnaData = await sendCreateNewOrderToKlarna(cartItems, product);
-		console.log(klarnaData);
-		return res.status(200).json(klarnaData);
+
+		return res.status(201).json(klarnaData);
 	} catch (error) {
 		console.error('There was a problem with the Klarna order: ', error);
 		if (error instanceof Error) {

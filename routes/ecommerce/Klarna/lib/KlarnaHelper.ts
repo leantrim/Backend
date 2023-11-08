@@ -41,7 +41,6 @@ export const sendCreateNewOrderToKlarna = async (
 	cartItems: CartType[],
 	product: ProductType
 ) => {
-	console.log('Came in?');
 	const payLoad = buildKlarnaRequest(cartItems, product);
 	const auth = getKlarnaAuth();
 	try {

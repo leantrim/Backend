@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import { validateUser as validate, User } from '../model/User';
-import auth from '../middleware/auth';
+import { validateUser as validate, User } from '../../model/main/User';
+import auth from '../../middleware/auth';
 import { UserType } from '@mediapartners/shared-types/types/panel';
 import xss from 'xss';
 

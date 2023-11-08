@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
+import crypto from 'crypto';
 
 const { timingSafeEqual } = require('node:crypto');
 
@@ -14,8 +15,13 @@ const auth = [
 	(req: Request, res: Response, next: NextFunction) => {
 		const bearerToken = req.header('authorization');
 		if (bearerToken && process.env.BACKEND_API_KEY) {
-			const token = Buffer.from(bearerToken);
-			const api_key = Buffer.from(process.env.BACKEND_API_KEY);
+			const tokenWithoutBearer = bearerToken.split(' ')[1];
+			const hash1 = crypto.createHash('sha256');
+			const token = hash1.update(tokenWithoutBearer).digest();
+
+			const hash2 = crypto.createHash('sha256');
+			const api_key = hash2.update(process.env.BACKEND_API_KEY).digest();
+
 			if (timingSafeEqual(token, api_key)) {
 				return next();
 			} else {

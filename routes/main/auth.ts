@@ -1,7 +1,7 @@
 import express from 'express';
 import Joi from 'joi';
 import bcrypt from 'bcrypt';
-import { User } from '../model/User';
+import { User } from '../../model/main/User';
 import { UserType } from '@mediapartners/shared-types/types/panel';
 import xss from 'xss';
 

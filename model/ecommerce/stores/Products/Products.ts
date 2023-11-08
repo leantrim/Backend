@@ -9,6 +9,7 @@ import {
 	SECTION_TYPES,
 } from '@mediapartners/shared-types/types/ecommerce/ProductType';
 import Joi from 'joi';
+import { imageSchema } from 'model/common/JoiRules';
 import mongoose, { Model, Schema } from 'mongoose';
 
 const productSchema: Schema<ProductType> = new mongoose.Schema({
@@ -133,12 +134,7 @@ const blocksSchema = Joi.array().items(
 		type: Joi.string()
 			.valid(...Object.values(SECTION_TYPES))
 			.required(),
-		images: Joi.array().items(
-			Joi.object().keys({
-				url: Joi.string().uri().required(),
-				alt: Joi.string().required(),
-			})
-		),
+		images: Joi.array().items(imageSchema),
 		title: Joi.string(),
 		text: Joi.string(),
 		buyNowButton: Joi.boolean(),
@@ -157,12 +153,6 @@ const dimensionsSchema = Joi.object<ProductDimensions>({
 	height: Joi.string().required(),
 	ropeLength: Joi.string().required(),
 	maxDogWeight: Joi.string().required(),
-});
-
-const imageSchema = Joi.object<ImageProp>({
-	url: Joi.string().uri(),
-	alt: Joi.string(),
-	_id: Joi.string(),
 });
 
 export { validateProduct, Product, validateUpdateProduct };

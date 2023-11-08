@@ -1,32 +1,16 @@
 import express, { Request, Response } from 'express';
-import { validateForm as validate, Form } from '../../model/LandingPages/Forms';
-import { FormTypes } from '@mediapartners/shared-types/types/panel';
-import auth from '../main/auth';
-import xss from 'xss';
+import auth from '../../middleware/auth';
+import { Logging, validateLog } from 'model/main/Logging';
+import { LoggingType } from '@mediapartners/shared-types/types/panel';
 
 const router = express.Router();
 
-router.post('/', async (req: Request, res: Response) => {
-	const { error } = validate(req.body);
-	if (error) return res.status(400).send(xss(error.message));
-
-	const form: FormTypes = new Form({ ...req.body, dateSubmitted: new Date() });
-
-	try {
-		await form.save();
-		return res.send(form);
-	} catch (err) {
-		console.error(err);
-		return res.status(500).send(`An unknown error has occured`);
-	}
-});
-
-// TODO: Add authentication (user, admin)
 router.get('/', auth, async (req: Request, res: Response) => {
-	const forms = await Form.find();
-	if (!forms) return res.status(404).send('No forms have been created');
+	const logs = await Logging.find();
 
-	return res.status(200).send(forms);
+	if (!logs.length) return res.status(404).send('No logs have been created');
+
+	return res.send(logs);
 });
 
 /*const sgMail = require("@sendgrid/mail");

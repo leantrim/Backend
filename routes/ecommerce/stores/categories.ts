@@ -17,7 +17,7 @@ router.post('/', auth, async (req: Request, res: Response) => {
 
 	try {
 		await category.save();
-		return res.send(category);
+		return res.status(201).send(category);
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('An error occurred. Please try again later.');

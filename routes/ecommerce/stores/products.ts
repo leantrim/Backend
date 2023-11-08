@@ -44,7 +44,7 @@ router.post('/:id', auth, async (req: Request, res: Response) => {
 
 	try {
 		await newProduct.save();
-		return res.send(newProduct);
+		return res.status(201).send(newProduct);
 	} catch (error) {
 		console.error(error);
 		return res.status(500).send('An error occurred. Please try again later.');
@@ -107,7 +107,6 @@ router.get('/', async (req: Request, res: Response) => {
 	try {
 		const products = await Product.find().select('-__v');
 		if (!products) return res.status(404).send('No products have been created');
-		console.log('came in!');
 		return res.status(200).send(products);
 	} catch (error) {
 		console.error(error);
