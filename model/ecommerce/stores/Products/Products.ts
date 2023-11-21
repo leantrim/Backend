@@ -9,7 +9,7 @@ import {
 	SECTION_TYPES,
 } from '@mediapartners/shared-types/types/ecommerce/ProductType';
 import Joi from 'joi';
-import { imageSchema } from 'model/common/JoiRules';
+import { imageSchema } from '../../../common/JoiRules';
 import mongoose, { Model, Schema } from 'mongoose';
 
 const productSchema: Schema<ProductType> = new mongoose.Schema({

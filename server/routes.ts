@@ -2,7 +2,6 @@ import { API_ROUTES } from '@mediapartners/shared-types/types/Routes';
 import express from 'express';
 import user from '../routes/main/user';
 import auth from '../routes/main/auth';
-import logging from '../routes/main/logging';
 import site from '../routes/LandingPages/site';
 import forms from '../routes/LandingPages/forms';
 import upload from '../routes/Storage/upload';
@@ -20,7 +19,6 @@ const router = express.Router();
 router.use(`/${API_ROUTES.PANEL_USERS}`, user);
 router.use(`/${API_ROUTES.AUTH}`, auth);
 router.use(`/${API_ROUTES.UPLOAD}`, upload);
-router.use(`/${API_ROUTES.LOGS}`, logging);
 
 // Landing Page routes
 router.use(`/${API_ROUTES.LANDING_PAGE_SITES}`, site);

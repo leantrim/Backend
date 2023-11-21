@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import axios from 'axios';
 import crypto from 'crypto';
-import { validateFacebook } from 'model/ecommerce/Facebook/FbEvents';
+import { validateFacebook } from '../../../model/ecommerce/Facebook/FbEvents';
 
 function hashWithSHA256(data: any) {
 	return crypto.createHash('sha256').update(data).digest('hex');
