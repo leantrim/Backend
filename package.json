@@ -14,7 +14,7 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@mediapartners/shared-types": "^1.0.42",
+		"@mediapartners/shared-types": "^1.0.46",
 		"@sendgrid/mail": "^7.7.0",
 		"axios": "^1.6.0",
 		"bcrypt": "^5.1.1",

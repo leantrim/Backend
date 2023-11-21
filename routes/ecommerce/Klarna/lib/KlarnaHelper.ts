@@ -3,6 +3,7 @@ import {
 	CartType,
 	ProductType,
 } from '@mediapartners/shared-types/types/ecommerce';
+import { calculateProductPrice } from '@mediapartners/shared-types/lib/helpers';
 
 const FRONTEND_URL = process.env.KLARNA_FRONTEND_URL;
 const BACKEND_URL = process.env.KLARNA_BACKEND_URL || 'https://localhost:8000';
@@ -24,6 +25,7 @@ export const getKlarnaOrder = async (order_id: string) => {
 
 		if (!response.ok) {
 			const errorData = await response.json();
+			console.log(errorData);
 			throw new Error(
 				`HTTP error! status: ${response.status}, message: ${errorData.error_messages}`
 			);
@@ -62,7 +64,7 @@ export const sendCreateNewOrderToKlarna = async (
 			);
 		}
 		const data = await response.json();
-		console.log(data);
+		console.log(response);
 		return data;
 	} catch (error) {
 		console.log(error);
@@ -72,8 +74,13 @@ export const sendCreateNewOrderToKlarna = async (
 };
 
 export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
+	const discountedPrice = calculateProductPrice(
+		product.price,
+		product.discountPrice
+	);
+
 	const orderInfo = cart.map((item) => {
-		const totalLineOrderAmount = item.quantity * product.price * 100; // Convert to öre
+		const totalLineOrderAmount = item.quantity * discountedPrice * 100; // Convert to öre
 		const totalTaxAmount = Math.floor(
 			totalLineOrderAmount * (2500 / (10000 + 2500))
 		);
@@ -81,7 +88,7 @@ export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
 			reference: `${item.variant.type} - ${item.productName}`,
 			name: `${item.productName} - ${item.variant.type}`,
 			quantity: item.quantity,
-			unit_price: product.price * 100,
+			unit_price: discountedPrice * 100,
 			quantity_unit: 'pcs',
 			tax_rate: 2500,
 			total_amount: totalLineOrderAmount,
@@ -92,10 +99,9 @@ export const buildKlarnaRequest = (cart: CartType[], product: ProductType) => {
 	});
 
 	const order_amount = cart.reduce(
-		(total, item) => total + item.quantity * product.price * 100, // Convert to öre
+		(total, item) => total + item.quantity * discountedPrice * 100, // Convert to öre
 		0
 	);
-
 	const totalTaxAmount = Math.floor(order_amount * (2500 / (10000 + 2500)));
 
 	const payLoad = {

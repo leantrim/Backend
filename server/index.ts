@@ -27,12 +27,7 @@ function checkJwtSecret() {
 function initializeExpressApp() {
 	const app = express();
 	app.use(helmet());
-	app.use(
-		cors({
-			credentials: true,
-			origin: 'https://localhost:3000', // replace with your client's origin
-		})
-	);
+	app.use(cors());
 	app.use(express.json());
 	app.use(cookieParser());
 	app.get('/', (req, res) => {

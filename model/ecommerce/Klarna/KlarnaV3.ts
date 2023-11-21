@@ -8,6 +8,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 const klarnaV3Schema: Schema<CartItemsType> = new mongoose.Schema({
 	totalPrice: { type: Number, required: true },
+	originalPrice: { type: Number },
 	cartItems: [
 		{
 			price: { type: Number, required: false },
@@ -31,6 +32,7 @@ const KlarnaV3: Model<CartItemsType> = mongoose.model(
 function validateKlarnaV3(product: CartItemsType) {
 	const schema = Joi.object<CartItemsType>({
 		totalPrice: Joi.number().optional(),
+		originalPrice: Joi.number().optional(),
 		loading: Joi.boolean().optional(),
 		cartItems: Joi.array<CartType>()
 			.items(
@@ -49,6 +51,7 @@ function validateKlarnaV3(product: CartItemsType) {
 					productId: Joi.string().required(),
 					quantity: Joi.number().required(),
 					price: Joi.number().optional(),
+					discountAmount: Joi.number().optional(),
 				})
 			)
 			.required(),
