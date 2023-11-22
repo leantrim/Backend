@@ -8,7 +8,7 @@ const categorySchema: Schema<CategoriesType> = new mongoose.Schema({
 	absolutePath: { type: String, required: true },
 	seoMetadata: { type: Object, required: true },
 	parentCategory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Categories' }],
-	products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Products' }],
+	products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 const Categories: Model<CategoriesType> = mongoose.model(

@@ -4,6 +4,7 @@ import {
 	ProductType,
 } from '@mediapartners/shared-types/types/ecommerce';
 import { calculateProductPrice } from '@mediapartners/shared-types/lib/helpers';
+import axios from 'axios';
 
 const FRONTEND_URL = process.env.KLARNA_FRONTEND_URL;
 const BACKEND_URL = process.env.KLARNA_BACKEND_URL || 'https://localhost:8000';
@@ -35,6 +36,31 @@ export const getKlarnaOrder = async (order_id: string) => {
 		return data;
 	} catch (error) {
 		console.error('There was a problem with the fetch operation: ', error);
+		return error;
+	}
+};
+export const acknowledgeOrder = async (order_id: string) => {
+	const auth = getKlarnaAuth();
+	try {
+		const response = await axios.post(
+			`${KLARNA_URL}/checkout/v3/orders/${order_id}/acknowledge`,
+			{
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: auth,
+				},
+			}
+		);
+
+		if (response.status === 200) {
+			return { success: true };
+		} else {
+			return { success: false, message: response.data.message };
+		}
+	} catch (error) {
+		console.error('There was a problem with the fetch operation: ', error);
+		return { success: false, message: error };
 		return error;
 	}
 };

@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express';
-import { getKlarnaOrder, sendCreateNewOrderToKlarna } from './lib/KlarnaHelper';
+import {
+	acknowledgeOrder,
+	getKlarnaOrder,
+	sendCreateNewOrderToKlarna,
+} from './lib/KlarnaHelper';
 import auth from '../../../middleware/auth';
 import { validateKlarnaV3 } from '../../../model/ecommerce/Klarna/KlarnaV3';
 import { Order } from '../../../model/ecommerce/Orders';
@@ -62,6 +66,7 @@ router.post('/confirmation/push', async (req: Request, res: Response) => {
 		const { options, html_snipet, ...restBody } = klarnaData;
 		sendOrderConfirmationEmail(restBody);
 		buildAndSendFbEvent(klarnaData);
+		acknowledgeOrder(klarnaData.order_id);
 		const order = new Order(klarnaData);
 		await order.save(); // Ensure the order is saved before sending the response
 	} catch (error) {
