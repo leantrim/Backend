@@ -12,7 +12,6 @@ const app = initializeExpressApp();
 startServer(app);
 
 app.use(apiRoutes);
-
 connectToMongoDB();
 
 // Function to check if JWT Secret is set
@@ -27,9 +26,9 @@ function checkJwtSecret() {
 function initializeExpressApp() {
 	const app = express();
 	app.use(helmet());
-	app.use(cors());
 	app.use(express.json());
 	app.use(cookieParser());
+	app.use(cors({ credentials: true, origin: 'https://localhost:3000' }));
 	app.get('/', (req, res) => {
 		res.status(403).send('hello world');
 	});

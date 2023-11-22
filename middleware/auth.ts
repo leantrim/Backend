@@ -15,12 +15,24 @@ const auth = [
 	(req: Request, res: Response, next: NextFunction) => {
 		const bearerToken = req.header('authorization');
 		if (bearerToken && process.env.BACKEND_API_KEY) {
-			const tokenWithoutBearer = bearerToken.split(' ')[1];
+			console.log(bearerToken);
+			let tokenWithoutBearer = bearerToken;
+			let apiKey = process.env.BACKEND_API_KEY;
+
+			if (!tokenWithoutBearer || !apiKey) {
+				return res.status(400).send('Bearer token or API key is missing');
+			}
+
+			// Ensure tokenWithoutBearer and apiKey are the same length
+			const maxLength = Math.max(tokenWithoutBearer.length, apiKey.length);
+			tokenWithoutBearer = tokenWithoutBearer.padEnd(maxLength, '0');
+			apiKey = apiKey.padEnd(maxLength, '0');
+
 			const hash1 = crypto.createHash('sha256');
 			const token = hash1.update(tokenWithoutBearer).digest();
 
 			const hash2 = crypto.createHash('sha256');
-			const api_key = hash2.update(process.env.BACKEND_API_KEY).digest();
+			const api_key = hash2.update(apiKey).digest();
 
 			if (timingSafeEqual(token, api_key)) {
 				return next();

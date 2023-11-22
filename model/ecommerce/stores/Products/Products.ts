@@ -89,7 +89,7 @@ function validateProduct(product: ProductType) {
 		mainImage: imageSchema.required(),
 		images: Joi.array().items(imageSchema).required(),
 		dimensions: dimensionsSchema.required(),
-		variants: Joi.array().items(variantsSchema).required(),
+		variants: variantsSchema.required(),
 		blocks: blocksSchema,
 	});
 
@@ -117,15 +117,14 @@ function validateUpdateProduct(product: ProductType) {
 }
 
 const variantsSchema = Joi.array().items(
-	Joi.object<ProductVariantType>({
+	Joi.object({
 		type: Joi.string().required(),
 		color: Joi.string().required(),
 		image: Joi.object({
 			url: Joi.string().uri().required(),
 			alt: Joi.string().required(),
-		}),
+		}).required(),
 		stock: Joi.number().required(),
-		_id: Joi.string(),
 	})
 );
 

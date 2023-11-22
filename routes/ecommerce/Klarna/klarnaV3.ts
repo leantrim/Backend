@@ -7,6 +7,11 @@ import { Product } from '../../../model/ecommerce/stores/Products/Products';
 import axios from 'axios';
 import { KlarnaOrderData } from './lib/KlarnaType';
 import xss from 'xss';
+import {
+	FbDataType,
+	hashWithSHA256,
+	sendPurchaseEventToFacebook,
+} from '../Facebook/helpers';
 
 const router = express.Router();
 
@@ -15,6 +20,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 	try {
 		const klarnaData = await getKlarnaOrder(req.params.id);
+		// sendPurchaseEventToFacebook();
 		return res.status(200).send(klarnaData);
 	} catch (error) {
 		console.error(error);
@@ -55,6 +61,7 @@ router.post('/confirmation/push', async (req: Request, res: Response) => {
 		const klarnaData = await getKlarnaOrder(orderId as string);
 		const { options, html_snipet, ...restBody } = klarnaData;
 		sendOrderConfirmationEmail(restBody);
+		buildAndSendFbEvent(klarnaData);
 		const order = new Order(klarnaData);
 		await order.save(); // Ensure the order is saved before sending the response
 	} catch (error) {
@@ -62,6 +69,34 @@ router.post('/confirmation/push', async (req: Request, res: Response) => {
 	}
 	return res.sendStatus(200); // Send a HTTP 200 status code back to Klarna
 });
+
+const buildAndSendFbEvent = (klarnaData: KlarnaOrderData) => {
+	const eventData: FbDataType = {
+		event_id: klarnaData.order_id,
+		custom_data: {
+			currency: klarnaData.purchase_currency,
+			num_items: klarnaData.order_lines.length,
+			content_ids: klarnaData.order_id,
+			content_type: 'product',
+			custom_parameters: {
+				variantType: klarnaData.order_lines.map((order) => order.reference),
+			},
+			value: klarnaData.order_amount / 100,
+		},
+		event_source_url: 'https://hundkopplet.se/produkt',
+		user_data: {
+			country: hashWithSHA256(klarnaData.purchase_country),
+			ct: hashWithSHA256(klarnaData.billing_address.city),
+			zp: hashWithSHA256(klarnaData.billing_address.postal_code),
+			fn: hashWithSHA256(klarnaData.shipping_address.given_name),
+			ln: hashWithSHA256(klarnaData.shipping_address.family_name),
+			db: hashWithSHA256(klarnaData.customer.date_of_birth),
+			ge: hashWithSHA256(klarnaData.customer.gender),
+			ph: hashWithSHA256(klarnaData.shipping_address.phone),
+		},
+	};
+	sendPurchaseEventToFacebook(eventData);
+};
 
 const sendOrderConfirmationEmail = (klarnaData: KlarnaOrderData) => {
 	const apiKey = process.env.SENDGRID_API_KEY;
@@ -80,7 +115,8 @@ const sendOrderConfirmationEmail = (klarnaData: KlarnaOrderData) => {
 			{
 				to: [
 					{
-						email: klarnaData.shipping_address.email,
+						email: 'test-t15m1vfy4@srv1.mail-tester.com',
+						// email: klarnaData.shipping_address.email,
 						name:
 							klarnaData.shipping_address.given_name +
 							' ' +
@@ -116,7 +152,10 @@ const sendOrderConfirmationEmail = (klarnaData: KlarnaOrderData) => {
 					),
 					total_amount: formatAmount(klarnaData.order_amount),
 					shipping_fee: 0,
-					subject: `[Orderbekräftelse #${klarnaData.order_id}] Hundkopplet.se`,
+					subject: `[Orderbekräftelse #${
+						klarnaData.order_id.split('-')[0]
+					}] Hundkopplet.se`,
+					contact_us_link: 'https://hundkopplet.se/kontakta-oss',
 				},
 			},
 		],

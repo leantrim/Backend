@@ -53,6 +53,32 @@ router.post('/:id', auth, async (req: Request, res: Response) => {
 
 router.put('/:id', auth, async (req: Request, res: Response) => {
 	const { user, ...restBody } = req.body;
+	const { error } = validateProduct(restBody);
+	if (error) return res.status(400).send(xss(error.message));
+	const product: ProductType | null = await Product.findById(req.params.id);
+
+	if (!product)
+		return res.status(404).send('The product with the given id was not found');
+
+	try {
+		const updatedProduct = await Product.findByIdAndUpdate(
+			req.params.id,
+			restBody,
+			{ new: true }
+		);
+		console.log(updatedProduct);
+		if (!updatedProduct) {
+			return res.status(404).send('No product found to update');
+		}
+		return res.status(200).send(updatedProduct);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).send('An error occurred. Please try again later.');
+	}
+});
+
+router.patch('/:id', auth, async (req: Request, res: Response) => {
+	const { user, ...restBody } = req.body;
 	const { error } = validateUpdateProduct(restBody);
 	if (error) return res.status(400).send(xss(error.message));
 	const productId = req.params.id;
@@ -102,7 +128,6 @@ router.put('/:id', auth, async (req: Request, res: Response) => {
 	// TODO: Add user log
 });
 
-// TODO: Add authentication (user, admin)
 router.get('/', async (req: Request, res: Response) => {
 	try {
 		const products = await Product.find().select('-__v');
