@@ -115,8 +115,7 @@ const sendOrderConfirmationEmail = (klarnaData: KlarnaOrderData) => {
 			{
 				to: [
 					{
-						email: 'test-t15m1vfy4@srv1.mail-tester.com',
-						// email: klarnaData.shipping_address.email,
+						email: klarnaData.shipping_address.email,
 						name:
 							klarnaData.shipping_address.given_name +
 							' ' +
