@@ -50,7 +50,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 	try {
 		const klarnaData = await getKlarnaOrder(req.params.id);
-		acknowledgeOrder(klarnaData.order_id);
 		return res.status(200).send(klarnaData);
 	} catch (error) {
 		console.error(error);
@@ -62,7 +61,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.post('/confirmation/push', async (req: Request, res: Response) => {
 	const orderId = req.query.order_id;
 	try {
-		console.log(orderId);
 		const klarnaData = await getKlarnaOrder(orderId as string);
 		const { options, html_snipet, ...restBody } = klarnaData;
 		await acknowledgeOrder(klarnaData.order_id);
