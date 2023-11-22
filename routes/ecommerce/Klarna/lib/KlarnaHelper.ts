@@ -42,21 +42,21 @@ export const getKlarnaOrder = async (order_id: string) => {
 export const acknowledgeOrder = async (order_id: string) => {
 	const auth = getKlarnaAuth();
 	try {
-		const response = await axios.post(
-			`${KLARNA_URL}/checkout/v3/orders/${order_id}/acknowledge`,
+		const response = await fetch(
+			`${KLARNA_URL}/ordermanagement/v1/orders/${order_id}/acknowledge`,
 			{
-				method: 'GET',
+				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 					Authorization: auth,
 				},
 			}
 		);
-
+		console.log(response.ok);
 		if (response.status === 200) {
 			return { success: true };
 		} else {
-			return { success: false, message: response.data.message };
+			return { success: false, message: response };
 		}
 	} catch (error) {
 		console.error('There was a problem with the fetch operation: ', error);

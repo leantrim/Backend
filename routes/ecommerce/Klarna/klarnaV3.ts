@@ -19,19 +19,6 @@ import {
 
 const router = express.Router();
 
-router.get('/:id', async (req: Request, res: Response) => {
-	if (!req.params.id) return res.status(400).send(xss('Order ID is missing.'));
-
-	try {
-		const klarnaData = await getKlarnaOrder(req.params.id);
-		// sendPurchaseEventToFacebook();
-		return res.status(200).send(klarnaData);
-	} catch (error) {
-		console.error(error);
-		return res.status(400).send(`An unkown error has occured`);
-	}
-});
-
 // Create new order
 router.post('/', async (req: Request, res: Response) => {
 	const { error } = validateKlarnaV3(req.body);
@@ -57,6 +44,20 @@ router.post('/', async (req: Request, res: Response) => {
 	}
 });
 
+// Get the new purchased order info
+router.get('/:id', async (req: Request, res: Response) => {
+	if (!req.params.id) return res.status(400).send(xss('Order ID is missing.'));
+
+	try {
+		const klarnaData = await getKlarnaOrder(req.params.id);
+		acknowledgeOrder(klarnaData.order_id);
+		return res.status(200).send(klarnaData);
+	} catch (error) {
+		console.error(error);
+		return res.status(400).send(`An unkown error has occured`);
+	}
+});
+
 // Confirm order
 router.post('/confirmation/push', async (req: Request, res: Response) => {
 	const orderId = req.query.order_id;
@@ -64,11 +65,15 @@ router.post('/confirmation/push', async (req: Request, res: Response) => {
 		console.log(orderId);
 		const klarnaData = await getKlarnaOrder(orderId as string);
 		const { options, html_snipet, ...restBody } = klarnaData;
-		sendOrderConfirmationEmail(restBody);
-		buildAndSendFbEvent(klarnaData);
-		acknowledgeOrder(klarnaData.order_id);
-		const order = new Order(klarnaData);
-		await order.save(); // Ensure the order is saved before sending the response
+		await acknowledgeOrder(klarnaData.order_id);
+		const orderExists = await Order.findOne({ order_id: klarnaData.order_id });
+		console.log(orderExists);
+		if (!orderExists) {
+			sendOrderConfirmationEmail(restBody);
+			buildAndSendFbEvent(klarnaData);
+			const order = new Order(klarnaData);
+			await order.save();
+		}
 	} catch (error) {
 		console.error(error);
 	}
