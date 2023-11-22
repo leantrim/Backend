@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 
 checkJwtSecret();
 
-const CURRENT_VERSION = 'v0.1.1';
+const CURRENT_VERSION = 'v0.1.2';
 
 const app = initializeExpressApp();
 startServer(app);
