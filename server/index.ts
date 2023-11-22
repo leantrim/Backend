@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 
 checkJwtSecret();
 
+const CURRENT_VERSION = 'v0.1.0';
+
 const app = initializeExpressApp();
 startServer(app);
 
@@ -30,7 +32,7 @@ function initializeExpressApp() {
 	app.use(cookieParser());
 	app.use(cors({ credentials: true, origin: 'https://localhost:3000' }));
 	app.get('/', (req, res) => {
-		res.status(403).send('hello world');
+		res.status(403).send(CURRENT_VERSION);
 	});
 
 	return app;
